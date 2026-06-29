@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Ahnsbecker Urlaubs- und Krankmelder 3.0</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b7cff">
+
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 15px;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 15px auto;
+      max-width: 220px;
+      height: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      border-color: #2b7cff;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 25px;
+      background: #2b7cff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      background: #1f5edb;
+    }
+
+    .radio-option {
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .radio-option label {
+      margin-top: 0;
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .radio-option input {
+      width: auto;
+      margin: 0;
+    }
+
+    .info-box {
+      background: #eef6ff;
+      padding: 15px;
+      border-left: 5px solid #2b7cff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGO: Datei muss logo.png heißen und im gleichen GitHub-Ordner liegen -->
+  <img src="logo.png" alt="Ahnsbecker Logo" class="logo">
+
+  <h1>Ahnsbecker Krankmelder 3.0</h1>
+  <div class="subtitle">Schnelle Krankmeldung per Handy</div>
+
+  <div class="info-box">
+    <b>ℹ️ Bitte beachten</b><br><br>
+
+    Eine Krankmeldung bitte immer ab dem ersten Tag bekanntgeben und immer beide Schritte ausführen:<br><br>
+
+    <b>1. Ohne eAU</b><br>
+    Sobald ihr wisst, dass ihr krank seid.<br>
+    ➜ Meldung geht an Geschäftsleitung & Sekretariat, später Daten mit eAU ergänzen<br><br>
+
+    <b>2. Mit eAU</b><br>
+    Nach dem Arztbesuch mit allen Daten ergänzen.<br>
+    ➜ Meldung geht nur an das Sekretariat – ihr müsst nichts weiter tun.
+  </div>
+
+  <form id="form">
+
+    <!-- Typ -->
+    <div class="radio-option">
+      <label>
+        <input type="radio" name="typ" value="ohne" checked onchange="toggleEAU()">
+        Krankmeldung ohne eAU
+      </label>
+    </div>
+
+    <div class="radio-option">
+      <label>
+        <input type="radio" name="typ" value="mit" onchange="toggleEAU()">
+        Krankmeldung mit eAU
+      </label>
+    </div>
+
+    <!-- Mitarbeiter -->
+    <label for="mitarbeiter">Mitarbeiter</label>
+    <select id="mitarbeiter" required>
+      <option value="">Bitte auswählen</option>
+    </select>
+
+    <!-- Datum -->
+    <label for="krankAb">Krank ab</label>
+    <input type="date" id="krankAb" required>
+
+    <label for="krankBis">Krank bis</label>
+    <input type="date" id="krankBis">
+
+    <!-- eAU -->
+    <div id="eauFelder" style="display:none;">
+      <label for="arztDatum">Datum Arztbesuch</label>
+      <input type="date" id="arztDatum">
+
+      <label for="eauDatum">Ausstellung eAU</label>
+      <input type="date" id="eauDatum">
+    </div>
+
+    <button type="submit">Krankmeldung per E-Mail senden</button>
+
+    <div class="hint">
+      Nach dem Klick öffnet sich dein E-Mail-Programm.
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+/* ================================
+   EMPFÄNGER EINSTELLEN
+   ================================ */
+
+// Ohne eAU: an Geschäftsleitung UND Sekretariat
+const EMAIL_OHNE_EAU = [
+  "d.austin@ahnsbecker-zimmerei.de",
+  "dennisaus@yahoo.de"
+];
+
+// Mit eAU: nur an Sekretariat
+const EMAIL_MIT_EAU = [
+  "d.austin@ahnsbecker-zimmerei.de"
+];
+
+
+/* ================================
+   MITARBEITER-LISTE
+   Namen hier ändern/ergänzen
+   ================================ */
+
+const mitarbeiterListe = [
+  "Austin, Dennis",
+  "Meyer, Marco",
+  "Tiedemann, Stefanie",
+  "Plagge, Timm",
+  "Morth, Björn",
+  "Lillie, Nicholas",
+  "Knakendöffel, Ralf",
+  "Richter, Dirk",
+  "Tegtmeier, Björn",
+  "Tostmann, Luis",
+  "Dannhauer, Paul",
+  "Santelmann, Carsten",
+  "Weich, Peter",
+  "Huth, Horst",
+  "Ritzke, Tim -Matthias",
+  "Heins, Nico",
+  "Fricke, Klaas",
+  "Stellmacher, Laura",
+  "Dralle, Jouis",
+  "Espejo-Trapote, Karl-Heinz",
+  "Berking, Lennard",
+  "Hustedt, Christoph",
+  "Ernst, Paul",
+  "Toure, Seydouba"
+
+];
+
+
+/* ================================
+   DROPDOWN FÜLLEN
+   ================================ */
+
+function ladeMitarbeiter() {
+  const select = document.getElementById("mitarbeiter");
+
+  mitarbeiterListe.forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+
+/* ================================
+   HEUTIGES DATUM SETZEN
+   ================================ */
+
+function setToday() {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("krankAb").value = today;
+}
+
+
+/* ================================
+   eAU anzeigen/verstecken
+   ================================ */
+
+function toggleEAU() {
+  const typ = document.querySelector('input[name="typ"]:checked').value;
+  const eauFelder = document.getElementById("eauFelder");
+
+  eauFelder.style.display = typ === "mit" ? "block" : "none";
+
+  document.getElementById("arztDatum").required = typ === "mit";
+  document.getElementById("eauDatum").required = typ === "mit";
+}
+
+
+/* ================================
+   FORMULAR ABSENDEN ALS E-MAIL
+   ================================ */
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const typ = document.querySelector('input[name="typ"]:checked').value;
+  const mitarbeiter = document.getElementById("mitarbeiter").value;
+  const krankAb = document.getElementById("krankAb").value;
+  const krankBis = document.getElementById("krankBis").value;
+  const arztDatum = document.getElementById("arztDatum").value;
+  const eauDatum = document.getElementById("eauDatum").value;
+
+  let empfaenger = [];
+  let betreff = "";
+  let nachricht = "";
+
+  if (typ === "ohne") {
+    empfaenger = EMAIL_OHNE_EAU;
+    betreff = "Krankmeldung ohne eAU - " + mitarbeiter;
+
+    nachricht =
+      "Hallo,%0D%0A%0D%0A" +
+      "hiermit melde ich folgende Krankmeldung ohne eAU:%0D%0A%0D%0A" +
+      "Mitarbeiter: " + mitarbeiter + "%0D%0A" +
+      "Krank ab: " + krankAb + "%0D%0A" +
+      "Krank bis: " + (krankBis || "noch offen") + "%0D%0A%0D%0A" +
+      "Die eAU-Daten werden nach dem Arztbesuch nachgereicht.%0D%0A%0D%0A" +
+      "Viele Grüße";
+  } else {
+    empfaenger = EMAIL_MIT_EAU;
+    betreff = "Krankmeldung mit eAU - " + mitarbeiter;
+
+    nachricht =
+      "Hallo,%0D%0A%0D%0A" +
+      "hiermit ergänze ich folgende Krankmeldung mit eAU:%0D%0A%0D%0A" +
+      "Mitarbeiter: " + mitarbeiter + "%0D%0A" +
+      "Krank ab: " + krankAb + "%0D%0A" +
+      "Krank bis: " + (krankBis || "noch offen") + "%0D%0A" +
+      "Datum Arztbesuch: " + arztDatum + "%0D%0A" +
+      "Ausstellung eAU: " + eauDatum + "%0D%0A%0D%0A" +
+      "Viele Grüße";
+  }
+
+  const mailtoLink =
+    "mailto:" + empfaenger.join(",") +
+    "?subject=" + encodeURIComponent(betreff) +
+    "&body=" + nachricht;
+
+  window.location.href = mailtoLink;
+});
+
+
+/* ================================
+   START
+   ================================ */
+
+ladeMitarbeiter();
+setToday();
+toggleEAU();
+</script>
+
+</body>
+</html>
+

@@ -288,11 +288,17 @@ function toggleEAU() {
   document.getElementById("eauDatum").required = typ === "mit";
 }
 
+<script>
 
 /* ================================
-   FORMULAR ABSENDEN ALS E-MAIL
+   GOOGLE SCRIPT URL
    ================================ */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg19etXWLBjmtZrihdLgp5MwUkebZ9lCJGIypYBsQfKPqJGB2f4NUN0Ul0X8BGrOwg/exec";
 
+
+/* ================================
+   FORMULAR ABSENDEN (MIT GOOGLE)
+   ================================ */
 document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
 
@@ -303,44 +309,41 @@ document.getElementById("form").addEventListener("submit", function(e) {
   const arztDatum = document.getElementById("arztDatum").value;
   const eauDatum = document.getElementById("eauDatum").value;
 
-  let empfaenger = [];
-  let betreff = "";
-  let nachricht = "";
-
-  if (typ === "ohne") {
-    empfaenger = EMAIL_OHNE_EAU;
-    betreff = "Krankmeldung ohne eAU - " + mitarbeiter;
-
-    nachricht =
-      "Hallo,%0D%0A%0D%0A" +
-      "hiermit melde ich folgende Krankmeldung ohne eAU:%0D%0A%0D%0A" +
-      "Mitarbeiter: " + mitarbeiter + "%0D%0A" +
-      "Krank ab: " + krankAb + "%0D%0A" +
-      "Krank bis: " + (krankBis || "noch offen") + "%0D%0A%0D%0A" +
-      "Die eAU-Daten werden nach dem Arztbesuch nachgereicht.%0D%0A%0D%0A" +
-      "Viele Grüße";
-  } else {
-    empfaenger = EMAIL_MIT_EAU;
-    betreff = "Krankmeldung mit eAU - " + mitarbeiter;
-
-    nachricht =
-      "Hallo,%0D%0A%0D%0A" +
-      "hiermit ergänze ich folgende Krankmeldung mit eAU:%0D%0A%0D%0A" +
-      "Mitarbeiter: " + mitarbeiter + "%0D%0A" +
-      "Krank ab: " + krankAb + "%0D%0A" +
-      "Krank bis: " + (krankBis || "noch offen") + "%0D%0A" +
-      "Datum Arztbesuch: " + arztDatum + "%0D%0A" +
-      "Ausstellung eAU: " + eauDatum + "%0D%0A%0D%0A" +
-      "Viele Grüße";
-  }
-
-  const mailtoLink =
-    "mailto:" + empfaenger.join(",") +
-    "?subject=" + encodeURIComponent(betreff) +
-    "&body=" + nachricht;
-
-  window.location.href = mailtoLink;
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      typ: typ,
+      mitarbeiter: mitarbeiter,
+      krankAb: krankAb,
+      krankBis: krankBis,
+      arztDatum: arztDatum,
+      eauDatum: eauDatum
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(() => {
+    alert("✅ Krankmeldung gesendet!");
+    document.getElementById("form").reset();
+    setToday();
+    toggleEAU();
+  })
+  .catch(() => {
+    alert("❌ Fehler beim Senden!");
+  });
 });
+
+
+/* ================================
+   START
+   ================================ */
+ladeMitarbeiter();
+setToday();
+toggleEAU();
+</script>
+
+
 
 
 /* ================================

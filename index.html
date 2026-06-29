@@ -190,7 +190,7 @@
     <button type="submit">Krankmeldung per E-Mail senden</button>
 
     <div class="hint">
-      Nach dem Klick öffnet sich dein E-Mail-Programm.
+      Nach dem Klick wird die Krankmeldung automatisch versendet.
     </div>
 
   </form>
@@ -326,6 +326,8 @@ document.getElementById("form").addEventListener("submit", function(e) {
 .catch(() => {
   alert("❌ Fehler beim Senden!");
 });
+
+}); 
 
 
 /* ================================

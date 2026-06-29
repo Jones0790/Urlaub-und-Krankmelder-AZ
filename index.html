@@ -309,29 +309,22 @@ document.getElementById("form").addEventListener("submit", function(e) {
   const eauDatum = document.getElementById("eauDatum").value;
 
   fetch(SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({
-      typ: typ,
-      mitarbeiter: mitarbeiter,
-      krankAb: krankAb,
-      krankBis: krankBis,
-      arztDatum: arztDatum,
-      eauDatum: eauDatum
-    }),
-    headers: {
-      "Content-Type": "application/json"
-    }
+  method: "POST",
+  mode: "no-cors",
+  body: JSON.stringify({
+    typ: typ,
+    mitarbeiter: mitarbeiter,
+    krankAb: krankAb,
+    krankBis: krankBis,
+    arztDatum: arztDatum,
+    eauDatum: eauDatum
   })
-  .then(() => {
-    alert("✅ Krankmeldung gesendet!");
-    document.getElementById("form").reset();
-    setToday();
-    toggleEAU();
-  })
-  .catch(() => {
-    alert("❌ Fehler beim Senden!");
-  });
+})
+.then(() => {
+  alert("✅ Krankmeldung gesendet!");
+})
+.catch(() => {
+  alert("❌ Fehler beim Senden!");
 });
 
 

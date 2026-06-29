@@ -8,7 +8,6 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2b7cff">
 
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -128,64 +127,64 @@
 
 <div class="container">
 
-  <!-- LOGO: Datei muss logo.png heißen und im gleichen GitHub-Ordner liegen -->
   <img src="icon.png" alt="Ahnsbecker Logo" class="logo">
 
-  <h1>Ahnsbecker Krankmelder 3.0</h1>
-  <div class="subtitle">Schnelle Krankmeldung per Handy</div>
+  <h1>Ahnsbecker Urlaubs- & Krankmelder 3.0</h1>
+  <div class="subtitle">Schneller Urlaubsantrag und Krankmeldung per Handy</div>
 
-  <div class="info-box">
-    <b>ℹ️ Bitte beachten</b><br><br>
+<div class="info-box">
+  <b>ℹ️ Bitte beachten</b><br><br>
 
-    Eine Krankmeldung bitte immer ab dem ersten Tag bekanntgeben und immer beide Schritte ausführen:<br><br>
+  <b>Urlaubsantrag</b><br>
+  Urlaub bitte frühzeitig einreichen.<br>
+  ➜ Der Antrag wird an die Geschäftsleitung geschickt und später erhaltet ihr durch das Sekretariat Rückmeldung.<br><br>
 
-    <b>1. Ohne eAU</b><br>
-    Sobald ihr wisst, dass ihr krank seid.<br>
-    ➜ Meldung geht an Geschäftsleitung & Sekretariat, später Daten mit eAU ergänzen<br><br>
+  <b>Krankmeldung</b><br>
+  Eine Krankmeldung bitte immer ab dem ersten Tag bekanntgeben und immer beide Schritte ausführen:<br><br>
 
-    <b>2. Mit eAU</b><br>
-    Nach dem Arztbesuch mit allen Daten ergänzen.<br>
-    ➜ Meldung geht nur an das Sekretariat – ihr müsst nichts weiter tun.
-  </div>
+  <b>1. Ohne eAU</b><br>
+  Sobald ihr wisst, dass ihr krank seid.<br>
+  ➜ Meldung geht an Geschäftsleitung & Sekretariat, später Daten mit eAU ergänzen<br><br>
+
+  <b>2. Mit eAU</b><br>
+  Nach dem Arztbesuch mit allen Daten ergänzen.<br>
+  ➜ Meldung geht nur an das Sekretariat – ihr müsst nichts weiter tun.
+</div>
 
   <form id="form">
 
-    <!-- Typ -->
-<div class="radio-option">
-  <label>
-    <input type="radio" name="typ" value="urlaub" checked onchange="toggleEAU()">
-    Urlaubsantrag
-  </label>
-</div>
+    <div class="radio-option">
+      <label>
+        <input type="radio" name="typ" value="urlaub" checked onchange="toggleEAU()">
+        Urlaubsantrag
+      </label>
+    </div>
 
-<div class="radio-option">
-  <label>
-    <input type="radio" name="typ" value="ohne" onchange="toggleEAU()">
-    Krankmeldung ohne eAU
-  </label>
-</div>
+    <div class="radio-option">
+      <label>
+        <input type="radio" name="typ" value="ohne" onchange="toggleEAU()">
+        Krankmeldung ohne eAU
+      </label>
+    </div>
 
-<div class="radio-option">
-  <label>
-    <input type="radio" name="typ" value="mit" onchange="toggleEAU()">
-    Krankmeldung mit eAU
-  </label>
-</div>
+    <div class="radio-option">
+      <label>
+        <input type="radio" name="typ" value="mit" onchange="toggleEAU()">
+        Krankmeldung mit eAU
+      </label>
+    </div>
 
-    <!-- Mitarbeiter -->
     <label for="mitarbeiter">Mitarbeiter</label>
     <select id="mitarbeiter" required>
       <option value="">Bitte auswählen</option>
     </select>
 
-    <!-- Datum -->
     <label for="krankAb">Von</label>
     <input type="date" id="krankAb" required>
 
     <label for="krankBis">Bis</label>
     <input type="date" id="krankBis">
 
-    <!-- eAU -->
     <div id="eauFelder" style="display:none;">
       <label for="arztDatum">Datum Arztbesuch</label>
       <input type="date" id="arztDatum">
@@ -205,59 +204,36 @@
 </div>
 
 <script>
-/* ================================
-   EMPFÄNGER EINSTELLEN
-   ================================ */
 
-// Ohne eAU: an Geschäftsleitung UND Sekretariat
+/* EMPFÄNGER */
+
+// Urlaub: NUR Geschäftsleitung ✅
+const EMAIL_URLAUB = [
+  "d.austin@ahnsbecker-zimmerei.de"
+];
+
+// Ohne eAU: beide
 const EMAIL_OHNE_EAU = [
   "d.austin@ahnsbecker-zimmerei.de",
   "dennisaus@yahoo.de"
 ];
 
-// Mit eAU: nur an Sekretariat
+// Mit eAU: nur Sekretariat
 const EMAIL_MIT_EAU = [
   "d.austin@ahnsbecker-zimmerei.de"
 ];
 
 
-/* ================================
-   MITARBEITER-LISTE
-   Namen hier ändern/ergänzen
-   ================================ */
+/* MITARBEITER */
 
 const mitarbeiterListe = [
-  "Austin, Dennis",
-  "Meyer, Marco",
-  "Tiedemann, Stefanie",
-  "Plagge, Timm",
-  "Morth, Björn",
-  "Lillie, Nicholas",
-  "Knakendöffel, Ralf",
-  "Richter, Dirk",
-  "Tegtmeier, Björn",
-  "Tostmann, Luis",
-  "Dannhauer, Paul",
-  "Santelmann, Carsten",
-  "Weich, Peter",
-  "Huth, Horst",
-  "Ritzke, Tim -Matthias",
-  "Heins, Nico",
-  "Fricke, Klaas",
-  "Stellmacher, Laura",
-  "Dralle, Jouis",
-  "Espejo-Trapote, Karl-Heinz",
-  "Berking, Lennard",
-  "Hustedt, Christoph",
-  "Ernst, Paul",
-  "Toure, Seydouba"
-
+  "Austin, Dennis","Meyer, Marco","Tiedemann, Stefanie","Plagge, Timm",
+  "Morth, Björn","Lillie, Nicholas","Knakendöffel, Ralf","Richter, Dirk",
+  "Tegtmeier, Björn","Tostmann, Luis","Dannhauer, Paul","Santelmann, Carsten",
+  "Weich, Peter","Huth, Horst","Ritzke, Tim -Matthias","Heins, Nico",
+  "Fricke, Klaas","Stellmacher, Laura","Dralle, Jouis","Espejo-Trapote, Karl-Heinz",
+  "Berking, Lennard","Hustedt, Christoph","Ernst, Paul","Toure, Seydouba"
 ];
-
-
-/* ================================
-   DROPDOWN FÜLLEN
-   ================================ */
 
 function ladeMitarbeiter() {
   const select = document.getElementById("mitarbeiter");
@@ -270,20 +246,10 @@ function ladeMitarbeiter() {
   });
 }
 
-
-/* ================================
-   HEUTIGES DATUM SETZEN
-   ================================ */
-
 function setToday() {
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("krankAb").value = today;
 }
-
-
-/* ================================
-   eAU anzeigen/verstecken
-   ================================ */
 
 function toggleEAU() {
   const typ = document.querySelector('input[name="typ"]:checked').value;
@@ -296,53 +262,53 @@ function toggleEAU() {
 }
 
 
-/* ================================
-   GOOGLE SCRIPT URL
-   ================================ */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTEokUvte24mrV36DRX2PSDRFBNwAFszbpNzkZyh-SG35-9Kcd6Z0rh6BTTMWBqN3tGg/exec";
+/* GOOGLE SCRIPT */
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxR3PPDUxQ5PteOaA46MGpG-WchAQDUELQFNJ4NShyxQzjwZxsTkZ-kSH1KQFXrPCLdcQ/exec";
 
 
-/* ================================
-   FORMULAR ABSENDEN (MIT GOOGLE)
-   ================================ */
+/* SENDEN */
+
 document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const typ = document.querySelector('input[name="typ"]:checked').value;
-  const mitarbeiter = document.getElementById("mitarbeiter").value;
-  const krankAb = document.getElementById("krankAb").value;
-  const krankBis = document.getElementById("krankBis").value;
-  const arztDatum = document.getElementById("arztDatum").value;
-  const eauDatum = document.getElementById("eauDatum").value;
+  const data = {
+    typ: document.querySelector('input[name="typ"]:checked').value,
+    mitarbeiter: document.getElementById("mitarbeiter").value,
+    krankAb: document.getElementById("krankAb").value,
+    krankBis: document.getElementById("krankBis").value,
+    arztDatum: document.getElementById("arztDatum").value,
+    eauDatum: document.getElementById("eauDatum").value
+  };
 
   fetch(SCRIPT_URL, {
-  method: "POST",
-  mode: "no-cors",
-  body: JSON.stringify({
-    typ: typ,
-    mitarbeiter: mitarbeiter,
-    krankAb: krankAb,
-    krankBis: krankBis,
-    arztDatum: arztDatum,
-    eauDatum: eauDatum
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(data)
   })
-})
-.then(() => {
-  alert("✅ Krankmeldung gesendet!");
-})
-.catch(() => {
-  alert("❌ Fehler beim Senden!");
+  .then(() => {
+    if (data.typ === "urlaub") {
+      alert("✅ Urlaubsantrag gesendet!");
+    } else {
+      alert("✅ Krankmeldung gesendet!");
+    }
+  })
+  .catch(() => {
+    alert("❌ Fehler beim Senden!");
+  });
+
 });
 
-}); 
 
+/* START */
 
-/* ================================
-   START
-   ================================ */
 ladeMitarbeiter();
 setToday();
 toggleEAU();
+
 </script>
+
+</body>
+</html>
 
 

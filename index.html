@@ -151,19 +151,26 @@
   <form id="form">
 
     <!-- Typ -->
-    <div class="radio-option">
-      <label>
-        <input type="radio" name="typ" value="ohne" checked onchange="toggleEAU()">
-        Krankmeldung ohne eAU
-      </label>
-    </div>
+<div class="radio-option">
+  <label>
+    <input type="radio" name="typ" value="urlaub" checked onchange="toggleEAU()">
+    Urlaubsantrag
+  </label>
+</div>
 
-    <div class="radio-option">
-      <label>
-        <input type="radio" name="typ" value="mit" onchange="toggleEAU()">
-        Krankmeldung mit eAU
-      </label>
-    </div>
+<div class="radio-option">
+  <label>
+    <input type="radio" name="typ" value="ohne" onchange="toggleEAU()">
+    Krankmeldung ohne eAU
+  </label>
+</div>
+
+<div class="radio-option">
+  <label>
+    <input type="radio" name="typ" value="mit" onchange="toggleEAU()">
+    Krankmeldung mit eAU
+  </label>
+</div>
 
     <!-- Mitarbeiter -->
     <label for="mitarbeiter">Mitarbeiter</label>
@@ -172,10 +179,10 @@
     </select>
 
     <!-- Datum -->
-    <label for="krankAb">Krank ab</label>
+    <label for="krankAb">Von</label>
     <input type="date" id="krankAb" required>
 
-    <label for="krankBis">Krank bis</label>
+    <label for="krankBis">Bis</label>
     <input type="date" id="krankBis">
 
     <!-- eAU -->
@@ -187,10 +194,10 @@
       <input type="date" id="eauDatum">
     </div>
 
-    <button type="submit">Krankmeldung per E-Mail senden</button>
+    <button type="submit">Urlaubsantrag oder Krankmeldung per E-Mail senden</button>
 
     <div class="hint">
-      Nach dem Klick wird die Krankmeldung automatisch versendet.
+      Nach dem Klick wird die Meldung automatisch versendet.
     </div>
 
   </form>
@@ -292,7 +299,7 @@ function toggleEAU() {
 /* ================================
    GOOGLE SCRIPT URL
    ================================ */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwves4LcExhTxJslSuROUseY-tjgwZXR1cnY9tINE6pFH9_VLlekzyZTMxcLkmDoRcf5A/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTEokUvte24mrV36DRX2PSDRFBNwAFszbpNzkZyh-SG35-9Kcd6Z0rh6BTTMWBqN3tGg/exec";
 
 
 /* ================================

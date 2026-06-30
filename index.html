@@ -127,7 +127,7 @@
 
 <div class="container">
 
-  <img src="icon.png" alt="Ahnsbecker Logo" class="logo">
+  <img src="Archiv/icon.png" alt="Ahnsbecker Logo" class="logo">
 
   <h1>Ahnsbecker Urlaubs- & Krankmelder 3.0</h1>
   <div class="subtitle">Schneller Urlaubsantrag und Krankmeldung per Handy</div>
@@ -188,9 +188,6 @@
     <div id="eauFelder" style="display:none;">
       <label for="arztDatum">Datum Arztbesuch</label>
       <input type="date" id="arztDatum">
-
-      <label for="eauDatum">Ausstellung eAU</label>
-      <input type="date" id="eauDatum">
     </div>
 
     <button type="submit">Urlaubsantrag oder Krankmeldung per E-Mail senden</button>
@@ -207,18 +204,15 @@
 
 /* EMPFÄNGER */
 
-// Urlaub: NUR Geschäftsleitung ✅
 const EMAIL_URLAUB = [
   "d.austin@ahnsbecker-zimmerei.de"
 ];
 
-// Ohne eAU: beide
 const EMAIL_OHNE_EAU = [
   "d.austin@ahnsbecker-zimmerei.de",
   "dennisaus@yahoo.de"
 ];
 
-// Mit eAU: nur Sekretariat
 const EMAIL_MIT_EAU = [
   "d.austin@ahnsbecker-zimmerei.de"
 ];
@@ -258,7 +252,6 @@ function toggleEAU() {
   eauFelder.style.display = typ === "mit" ? "block" : "none";
 
   document.getElementById("arztDatum").required = typ === "mit";
-  document.getElementById("eauDatum").required = typ === "mit";
 }
 
 
@@ -277,8 +270,7 @@ document.getElementById("form").addEventListener("submit", function(e) {
     mitarbeiter: document.getElementById("mitarbeiter").value,
     krankAb: document.getElementById("krankAb").value,
     krankBis: document.getElementById("krankBis").value,
-    arztDatum: document.getElementById("arztDatum").value,
-    eauDatum: document.getElementById("eauDatum").value
+    arztDatum: document.getElementById("arztDatum").value
   };
 
   fetch(SCRIPT_URL, {
@@ -310,5 +302,4 @@ toggleEAU();
 
 </body>
 </html>
-
 

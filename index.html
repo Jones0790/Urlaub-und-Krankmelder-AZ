@@ -2,13 +2,46 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Ahnsbecker Urlaubs- und Krankmelder 3.0</title>
+  <title>Ahnsbecker APP 3.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2b7cff">
 
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #e0e0e0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tab.active {
+  background: #2b7cff;
+  color: white;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
@@ -127,19 +160,29 @@
 
 <div class="container">
 
-  <img src="Archiv/icon.png" alt="Ahnsbecker Logo" class="logo">
+  <img src="icon.png" alt="Ahnsbecker Logo" class="logo">
 
-  <h1>Ahnsbecker Urlaubs- & Krankmelder 3.0</h1>
-  <div class="subtitle">Schneller Urlaubsantrag und Krankmeldung per Handy</div>
+  <h1>Ahnsbecker APP 3.0</h1>
+  <div class="subtitle">Super Service International</div>
+
+<div class="tabs">
+<button class="tab active" onclick="showTab('formular', this)">📩 Meldung</button>
+<button class="tab" onclick="showTab('baustelle', this)">📋 Baustellenplan</button>
+
+</div>
+
+<div id="formular" class="tab-content active">
+
+<h2>📩 Urlaubsantrag & Krankmeldung</h2>
 
 <div class="info-box">
   <b>ℹ️ Bitte beachten</b><br><br>
 
-  <b>Urlaubsantrag</b><br>
+    <b>🌴 Urlaubsantrag</b><br>
   Urlaub bitte frühzeitig einreichen.<br>
   ➜ Der Antrag wird an die Geschäftsleitung geschickt und später erhaltet ihr durch das Sekretariat Rückmeldung.<br><br>
 
-  <b>Krankmeldung</b><br>
+  <b>🤒 Krankmeldung</b><br>
   Eine Krankmeldung bitte immer ab dem ersten Tag bekanntgeben und immer beide Schritte ausführen:<br><br>
 
   <b>1. Ohne eAU</b><br>
@@ -197,10 +240,31 @@
     </div>
 
   </form>
+</div>
+
+<div id="baustelle" class="tab-content">
+<h2>📋 Baustellenplan</h2>
+
+<div class="info-box">
+  <p>
+    Bitte gebt eure Kalenderwoche ein, um zu sehen, auf welchen Baustellen ihr eingeplant seid.
+  </p>
+</div>
+
+<label>Mitarbeiter</label>
+<select id="mitarbeiterPlan"></select>
+
+<label>Kalenderwoche</label>
+<input type="number" id="kw" min="1" max="53">
+
+<button type="button" onclick="ladeBaustellenplan()">Anzeigen</button>
+
+<div id="baustellenOutput" style="margin-top:15px;"></div>
 
 </div>
 
 <script>
+
 
 /* EMPFÄNGER */
 
@@ -230,15 +294,18 @@ const mitarbeiterListe = [
 ];
 
 function ladeMitarbeiter() {
-  const select = document.getElementById("mitarbeiter");
+  const select1 = document.getElementById("mitarbeiter");
+  const select2 = document.getElementById("mitarbeiterPlan");
 
-  mitarbeiterListe.forEach(name => {
-    const option = document.createElement("option");
-    option.value = name;
-    option.textContent = name;
-    select.appendChild(option);
+  select1.innerHTML = '<option value="">Bitte auswählen</option>';
+  select2.innerHTML = '<option value="">Bitte auswählen</option>';
+
+  mitarbeiterListe.forEach(m => {
+    select1.add(new Option(m, m));
+    select2.add(new Option(m, m));
   });
 }
+
 
 function setToday() {
   const today = new Date().toISOString().split("T")[0];
@@ -257,7 +324,7 @@ function toggleEAU() {
 
 /* GOOGLE SCRIPT */
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxR3PPDUxQ5PteOaA46MGpG-WchAQDUELQFNJ4NShyxQzjwZxsTkZ-kSH1KQFXrPCLdcQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypmBxr2Bt2Ua-nuQszF0HeH4TYTRyAoNMxkhp9c_ttMzRFYDfICVZwhjzWoWHhleTL7g/exec";
 
 
 /* SENDEN */
@@ -290,16 +357,76 @@ document.getElementById("form").addEventListener("submit", function(e) {
   });
 
 });
+function ladeBaustellenplan() {
+  const m = document.getElementById("mitarbeiterPlan").value;
+  const kw = document.getElementById("kw").value;
 
+  if (!m) {
+    alert("Bitte Mitarbeiter wählen");
+    return;
+  }
+
+  if (!kw) {
+  alert("Bitte Kalenderwoche eingeben");
+  return;
+  }
+
+  fetch(`${SCRIPT_URL}?action=baustellenplan&mitarbeiter=${encodeURIComponent(m)}&kw=${kw}`)
+    .then(r => r.json())
+    .then(data => {
+
+      let html = "";
+
+      if (!data.daten || data.daten.length === 0) {
+        html = "Keine Daten gefunden";
+      } else {
+        data.daten.forEach(e => {
+        html += `
+  <div style="padding:10px; margin-bottom:10px; background:#f4f6f8; border-radius:8px;">
+    <b>${e.datum}</b><br><br>
+
+    Baustelle 1: ${e.baustelle1 ? e.baustelle1 : "kein Eintrag"}<br>
+    Baustelle 2: ${e.baustelle2 ? e.baustelle2 : "kein Eintrag"}<br>
+    Baustelle 3: ${e.baustelle3 ? e.baustelle3 : "kein Eintrag"}
+  </div>
+`;
+
+        });
+      }
+
+      document.getElementById("baustellenOutput").innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("baustellenOutput").innerHTML = "❌ Fehler beim Laden";
+    });
+}
+
+function getKW() {
+  const d = new Date();
+  const onejan = new Date(d.getFullYear(),0,1);
+  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7);
+}
 
 /* START */
 
 ladeMitarbeiter();
 setToday();
 toggleEAU();
+document.getElementById("kw").value = getKW();
+
+function showTab(tabId, el) {
+  document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+  document.getElementById(tabId).classList.add("active");
+  el.classList.add("active");
+}
+
 
 </script>
 
 </body>
 </html>
+
+
 
